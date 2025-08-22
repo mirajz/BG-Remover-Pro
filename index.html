@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BG Remover Pro - One Click Background Removal</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #1a2a6c);
+            color: #fff;
+            min-height: 100vh;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            padding: 30px 0;
+            position: relative;
+        }
+        
+        h1 {
+            font-size: 3.5rem;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            background: linear-gradient(to right, #ff7e5f, #feb47b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .tagline {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto 30px;
+        }
+        
+        .main-content {
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .upload-section {
+            flex: 1;
+            min-width: 300px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .result-section {
+            flex: 1;
+            min-width: 300px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .section-title {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: #ff7e5f;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .upload-area {
+            border: 3px dashed rgba(255, 255, 255, 0.3);
+            border-radius: 15px;
+            padding: 40px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 30px;
+            position: relative;
+        }
+        
+        .upload-area:hover {
+            border-color: #ff7e5f;
+            background: rgba(255, 126, 95, 0.1);
+        }
+        
+        .upload-area i {
+            font-size: 4rem;
+            margin-bottom: 15px;
+            color: #ff7e5f;
+        }
+        
+        .upload-area h3 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .upload-area p {
+            opacity: 0.8;
+            margin-bottom: 20px;
+        }
+        
+        .btn {
+            background: linear-gradient(to right, #ff7e5f, #feb47b);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 1.1rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 15px rgba(255, 126, 95, 0.4);
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(255, 126, 95, 0.6);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+        }
+        
+        .btn-outline {
+            background: transparent;
+            border: 2px solid #ff7e5f;
+            color: #ff7e5f;
+        }
+        
+        .image-container {
+            position: relative;
+            width: 100%;
+            height: 400px;
+            margin: 20px 0;
+            border-radius: 15px;
+            overflow: hidden;
+            background: rgba(0, 0, 0, 0.2);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        #originalImage, #resultImage {
+            max-width: 100%;
+            max-height: 100%;
+            display: none;
+        }
+        
+        .placeholder-text {
+            font-size: 1.2rem;
+            opacity: 0.7;
+        }
+        
+        .tools-section {
+            margin-top: 20px;
+        }
+        
+        .tool-title {
+            font-size: 1.2rem;
+            margin: 20px 0 15px;
+            color: #feb47b;
+        }
+        
+        .color-palette {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+        
+        .color-option {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            transition: transform 0.2s;
+        }
+        
+        .color-option:hover {
+            transform: scale(1.1);
+        }
+        
+        .color-option.active {
+            transform: scale(1.2);
+            border-color: white;
+            box-shadow: 0 0 10px white;
+        }
+        
+        .slider-container {
+            margin: 30px 0;
+        }
+        
+        .slider-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        
+        .slider-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        
+        .slider {
+            width: 100%;
+            height: 10px;
+            -webkit-appearance: none;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 5px;
+            outline: none;
+            margin: 15px 0;
+        }
+        
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            background: #ff7e5f;
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 30px;
+        }
+        
+        .magnifier {
+            position: absolute;
+            width: 150px;
+            height: 150px;
+            border: 2px solid white;
+            border-radius: 50%;
+            background-repeat: no-repeat;
+            pointer-events: none;
+            display: none;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
+            z-index: 100;
+        }
+        
+        .magnifier-label {
+            background: rgba(0, 0, 0, 0.7);
+            padding: 5px 10px;
+            border-radius: 5px;
+            position: absolute;
+            bottom: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.8rem;
+            white-space: nowrap;
+        }
+        
+        .features {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 30px;
+            margin-top: 50px;
+        }
+        
+        .feature-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 25px;
+            width: 250px;
+            text-align: center;
+            transition: transform 0.3s;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+            background: rgba(255, 255, 255, 0.15);
+        }
+        
+        .feature-card i {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            color: #ff7e5f;
+        }
+        
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 30px 0;
+            margin-top: 50px;
+            font-size: 1rem;
+            opacity: 0.7;
+        }
+        
+        footer a {
+            color: #ff7e5f;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+        
+        footer a:hover {
+            text-decoration: underline;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .spinner {
+            border: 5px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top: 5px solid #ff7e5f;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        .error-message {
+            color: #ff6b6b;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+            display: none;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        @media (max-width: 768px) {
+            .main-content {
+                flex-direction: column;
+            }
+            
+            h1 {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-magic"></i> BG Remover Pro</h1>
+            <p class="tagline">Remove image backgrounds in one click. Instantly download transparent PNGs or add custom backgrounds.</p>
+        </header>
+
+        <!-- Ad Script Start -->
+        <div style="text-align: center; margin-bottom: 20px;">
+            <script type="text/javascript">
+                atOptions = {
+                    'key' : 'b8ba53b9dc4a5c150bffc503ae1eab85',
+                    'format' : 'iframe',
+                    'height' : 50,
+                    'width' : 320,
+                    'params' : {}
+                };
+            </script>
+            <script type="text/javascript" src="//www.highperformanceformat.com/b8ba53b9dc4a5c150bffc503ae1eab85/invoke.js"></script>
+        </div>
+        <!-- Ad Script End -->
+        
+        <div class="main-content">
+            <div class="upload-section">
+                <h2 class="section-title"><i class="fas fa-cloud-upload-alt"></i> Upload Image</h2>
+                
+                <div class="upload-area" id="dropArea">
+                    <i class="fas fa-file-image"></i>
+                    <h3>Drag & Drop your image here</h3>
+                    <p>or</p>
+                    <button class="btn" id="uploadBtn"><i class="fas fa-folder-open"></i> Browse Files</button>
+                    <input type="file" id="fileInput" accept="image/*" style="display: none;">
+                    <div class="error-message" id="uploadError"></div>
+                </div>
+                
+                <div class="loading" id="loadingIndicator">
+                    <div class="spinner"></div>
+                    <p>Removing background... This may take a few seconds</p>
+                    <div class="error-message" id="apiError"></div>
+                </div>
+                
+                <div class="image-container">
+                    <img id="originalImage" alt="Original Image">
+                    <div class="placeholder-text" id="originalPlaceholder">Your image will appear here</div>
+                </div>
+            </div>
+            
+            <div class="result-section">
+                <h2 class="section-title"><i class="fas fa-image"></i> Result</h2>
+                
+                <div class="image-container" id="resultContainer">
+                    <img id="resultImage" alt="Result Image">
+                    <div class="placeholder-text" id="resultPlaceholder">Processed image will appear here</div>
+                    <div class="magnifier" id="magnifier">
+                        <div class="magnifier-label">2x Zoom</div>
+                    </div>
+                </div>
+                
+                <div class="tools-section">
+                    <div class="tool-title"><i class="fas fa-palette"></i> Background Color</div>
+                    <div class="color-palette">
+                        <div class="color-option active" style="background-color: transparent;" data-color="transparent"></div>
+                        <div class="color-option" style="background-color: #ffffff;" data-color="#ffffff"></div>
+                        <div class="color-option" style="background-color: #f0f0f0;" data-color="#f0f0f0"></div>
+                        <div class="color-option" style="background-color: #ff7e5f;" data-color="#ff7e5f"></div>
+                        <div class="color-option" style="background-color: #3498db;" data-color="#3498db"></div>
+                        <div class="color-option" style="background-color: #2ecc71;" data-color="#2ecc71"></div>
+                        <div class="color-option" style="background: linear-gradient(45deg, #ff7e5f, #feb47b);" data-color="gradient"></div>
+                    </div>
+                    
+                    <div class="tool-title"><i class="fas fa-sliders-h"></i> Before & After Comparison</div>
+                    <div class="slider-container">
+                        <div class="slider-header">
+                            <span>Before</span>
+                            <span>After</span>
+                        </div>
+                        <input type="range" min="0" max="100" value="50" class="slider" id="comparisonSlider">
+                        <div class="slider-labels">
+                            <span>Original</span>
+                            <span>Result</span>
+                        </div>
+                    </div>
+                    
+                    <div class="tool-title"><i class="fas fa-search-plus"></i> Magnifying Glass</div>
+                    <button class="btn btn-outline" id="toggleMagnifier"><i class="fas fa-search"></i> Toggle Magnifier</button>
+                </div>
+                
+                <div class="action-buttons">
+                    <button class="btn" id="downloadBtn" disabled><i class="fas fa-download"></i> Download Result</button>
+                    <button class="btn" id="processBtn" disabled><i class="fas fa-cogs"></i> Remove Background</button>
+                    <button class="btn btn-outline" id="resetBtn"><i class="fas fa-redo"></i> Reset</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="features">
+            <div class="feature-card">
+                <i class="fas fa-bolt"></i>
+                <h3>One-Click Removal</h3>
+                <p>Remove backgrounds instantly with our advanced AI technology</p>
+            </div>
+            
+            <div class="feature-card">
+                <i class="fas fa-paint-brush"></i>
+                <h3>Custom Backgrounds</h3>
+                <p>Choose from colors or gradients to create the perfect background</p>
+            </div>
+            
+            <div class="feature-card">
+                <i class="fas fa-search"></i>
+                <h3>Precision Tools</h3>
+                <p>Magnifier and comparison slider for detailed editing</p>
+            </div>
+        </div>
+        
+        <footer>
+            <p>BG Remover Pro © 2023 | All Rights Reserved</p>
+            <p>Powered by remove.bg API</p>
+            <a href="about.html">About, Policy, Team & Services</a>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // DOM Elements
+            const fileInput = document.getElementById('fileInput');
+            const uploadBtn = document.getElementById('uploadBtn');
+            const dropArea = document.getElementById('dropArea');
+            const originalImage = document.getElementById('originalImage');
+            const resultImage = document.getElementById('resultImage');
+            const originalPlaceholder = document.getElementById('originalPlaceholder');
+            const resultPlaceholder = document.getElementById('resultPlaceholder');
+            const processBtn = document.getElementById('processBtn');
+            const downloadBtn = document.getElementById('downloadBtn');
+            const resetBtn = document.getElementById('resetBtn');
+            const colorOptions = document.querySelectorAll('.color-option');
+            const comparisonSlider = document.getElementById('comparisonSlider');
+            const toggleMagnifier = document.getElementById('toggleMagnifier');
+            const magnifier = document.getElementById('magnifier');
+            const resultContainer = document.getElementById('resultContainer');
+            const loadingIndicator = document.getElementById('loadingIndicator');
+            const uploadError = document.getElementById('uploadError');
+            const apiError = document.getElementById('apiError');
+            
+            // State variables
+            let originalImageData = null;
+            let processedImageData = null;
+            let magnifierEnabled = false;
+            let selectedColor = 'transparent';
+            let uploadedFile = null;
+            
+            // API Configuration
+            const API_KEY = 'DV725on2xWP9zH5ErJ1C4GNc';
+            const API_URL = 'https://api.remove.bg/v1.0/removebg';
+            
+            // Event Listeners
+            uploadBtn.addEventListener('click', () => fileInput.click());
+            fileInput.addEventListener('change', handleFileSelect);
+            dropArea.addEventListener('dragover', handleDragOver);
+            dropArea.addEventListener('drop', handleDrop);
+            processBtn.addEventListener('click', processImage);
+            downloadBtn.addEventListener('click', downloadImage);
+            resetBtn.addEventListener('click', resetAll);
+            toggleMagnifier.addEventListener('click', toggleMagnifierHandler);
+            resultContainer.addEventListener('mousemove', handleMagnifier);
+            resultContainer.addEventListener('mouseleave', hideMagnifier);
+            comparisonSlider.addEventListener('input', handleComparisonSlider);
+            
+            // Color palette selection
+            colorOptions.forEach(option => {
+                option.addEventListener('click', () => {
+                    colorOptions.forEach(opt => opt.classList.remove('active'));
+                    option.classList.add('active');
+                    selectedColor = option.getAttribute('data-color');
+                    applyBackgroundColor();
+                });
+            });
+            
+            // Functions
+            function handleFileSelect(e) {
+                const file = e.target.files[0];
+                if (file && file.type.match('image.*')) {
+                    handleImageFile(file);
+                }
+            }
+            
+            function handleDragOver(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                dropArea.style.borderColor = '#ff7e5f';
+                dropArea.style.backgroundColor = 'rgba(255, 126, 95, 0.1)';
+            }
+            
+            function handleDrop(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                dropArea.style.borderColor = 'rgba(255, 255, 255, 0.3)';
+                dropArea.style.backgroundColor = 'transparent';
+                
+                const file = e.dataTransfer.files[0];
+                if (file && file.type.match('image.*')) {
+                    handleImageFile(file);
+                }
+            }
+            
+            function handleImageFile(file) {
+                // Check file size (remove.bg free tier has 0.25MP limit)
+                if (file.size > 1024 * 1024 * 5) { // 5MB limit
+                    uploadError.textContent = 'File size exceeds 5MB limit. Please choose a smaller image.';
+                    uploadError.style.display = 'block';
+                    return;
+                }
+                
+                uploadError.style.display = 'none';
+                uploadedFile = file;
+                
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    originalImage.src = e.target.result;
+                    originalImage.onload = function() {
+                        originalImage.style.display = 'block';
+                        originalPlaceholder.style.display = 'none';
+                        processBtn.disabled = false;
+                        downloadBtn.disabled = true;
+                        originalImageData = e.target.result;
+                    }
+                }
+                
+                reader.readAsDataURL(file);
+            }
+            
+            function processImage() {
+                if (!uploadedFile) return;
+                
+                // Show loading indicator
+                loadingIndicator.style.display = 'block';
+                apiError.style.display = 'none';
+                
+                // Prepare form data
+                const formData = new FormData();
+                formData.append('image_file', uploadedFile);
+                formData.append('size', 'auto');
+                
+                // Make API request to remove.bg
+                fetch(API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'X-Api-Key': API_KEY
+                    },
+                    body: formData
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        return response.json().then(err => {
+                            throw new Error(err.errors[0].title);
+                        });
+                    }
+                    return response.blob();
+                })
+                .then(blob => {
+                    // Create object URL from blob
+                    const url = URL.createObjectURL(blob);
+                    
+                    // Display result
+                    resultImage.src = url;
+                    resultImage.onload = function() {
+                        resultImage.style.display = 'block';
+                        resultPlaceholder.style.display = 'none';
+                        downloadBtn.disabled = false;
+                        processedImageData = url;
+                        
+                        // Apply selected background
+                        applyBackgroundColor();
+                        
+                        // Hide loading indicator
+                        loadingIndicator.style.display = 'none';
+                    };
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    loadingIndicator.style.display = 'none';
+                    apiError.textContent = `Error: ${error.message || 'Failed to remove background'}`;
+                    apiError.style.display = 'block';
+                });
+            }
+            
+            function applyBackgroundColor() {
+                if (!resultImage.src) return;
+                
+                if (selectedColor === 'transparent') {
+                    resultContainer.style.background = 'transparent';
+                } else if (selectedColor === 'gradient') {
+                    resultContainer.style.background = 'linear-gradient(45deg, #ff7e5f, #feb47b)';
+                } else {
+                    resultContainer.style.background = selectedColor;
+                }
+            }
+            
+            function downloadImage() {
+                if (!processedImageData) return;
+                
+                const link = document.createElement('a');
+                link.href = processedImageData;
+                link.download = 'background-removed.png';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
+            
+            function resetAll() {
+                fileInput.value = '';
+                originalImage.src = '';
+                resultImage.src = '';
+                originalImage.style.display = 'none';
+                resultImage.style.display = 'none';
+                originalPlaceholder.style.display = 'block';
+                resultPlaceholder.style.display = 'block';
+                processBtn.disabled = true;
+                downloadBtn.disabled = true;
+                magnifier.style.display = 'none';
+                magnifierEnabled = false;
+                resultContainer.style.background = 'rgba(0, 0, 0, 0.2)';
+                comparisonSlider.value = 50;
+                originalImageData = null;
+                processedImageData = null;
+                uploadedFile = null;
+                uploadError.style.display = 'none';
+                apiError.style.display = 'none';
+                
+                // Reset color selection
+                colorOptions.forEach(opt => opt.classList.remove('active'));
+                document.querySelector('.color-option[data-color="transparent"]').classList.add('active');
+                selectedColor = 'transparent';
+            }
+            
+            function toggleMagnifierHandler() {
+                magnifierEnabled = !magnifierEnabled;
+                magnifier.style.display = magnifierEnabled ? 'block' : 'none';
+                toggleMagnifier.innerHTML = magnifierEnabled ? 
+                    '<i class="fas fa-search"></i> Disable Magnifier' : 
+                    '<i class="fas fa-search"></i> Enable Magnifier';
+            }
+            
+            function handleMagnifier(e) {
+                if (!magnifierEnabled || !resultImage.style.display || resultImage.style.display === 'none') return;
+                
+                const containerRect = resultContainer.getBoundingClientRect();
+                const x = e.clientX - containerRect.left;
+                const y = e.clientY - containerRect.top;
+                
+                // Position magnifier
+                magnifier.style.left = (x - 75) + 'px';
+                magnifier.style.top = (y - 75) + 'px';
+                
+                // Set magnifier background
+                magnifier.style.backgroundImage = `url('${resultImage.src}')`;
+                magnifier.style.backgroundSize = `${resultImage.width * 2}px ${resultImage.height * 2}px`;
+                magnifier.style.backgroundPosition = `-${x * 2 - 75}px -${y * 2 - 75}px`;
+            }
+            
+            function hideMagnifier() {
+                magnifier.style.display = 'none';
+            }
+            
+            function handleComparisonSlider() {
+                // This would normally control the before/after slider position
+                // For demo, we'll just log the value
+                console.log('Slider position:', comparisonSlider.value);
+            }
+        });
+    </script>
+</body>
+</html>
